@@ -370,16 +370,16 @@ local function blatantFishingLoop()
             -- Step 1: Rapid fire casts (2 parallel casts)
             pcall(function()
                 Events.equip:FireServer(1)
-                task.wait(0.01)
+                task.wait(0.0001)
                 
                 -- Cast 1
                 task.spawn(function()
                     Events.charge:InvokeServer(1755848498.4834)
-                    task.wait(0.01)
+                    task.wait(0.0001)
                     Events.minigame:InvokeServer(1.2854545116425, 1)
                 end)
                 
-                task.wait(0.05)
+                task.wait(0.001)
                 
                 -- Cast 2 (overlapping)
                 task.spawn(function()
@@ -397,7 +397,7 @@ local function blatantFishingLoop()
                 pcall(function() 
                     Events.fishing:FireServer() 
                 end)
-                task.wait(0.01)
+                task.wait()
             end
             
             -- Step 4: Short cooldown (50% faster)
@@ -406,7 +406,7 @@ local function blatantFishingLoop()
             isFishing = false
             print("[Blatant] ⚡ Fast cycle")
         else
-            task.wait(0.01)
+            task.wait()
         end
     end
 end
@@ -424,7 +424,7 @@ local function normalFishingLoop()
             
             isFishing = false
         else
-            task.wait(0.1)
+            task.wait()
         end
     end
 end
@@ -437,7 +437,7 @@ local function fishingLoop()
         else
             normalFishingLoop()
         end
-        task.wait(0.1)
+        task.wait()
     end
 end
 
