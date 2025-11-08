@@ -346,9 +346,9 @@ local fishingActive = false
 local function castRod()
     pcall(function()
         Events.equip:FireServer(1)
-        task.wait(0.05)
+        task.wait()
         Events.charge:InvokeServer(1755848498.4834)
-        task.wait(0.02)
+        task.wait()
         Events.minigame:InvokeServer(1.2854545116425, 1)
         print("[Fishing] 🎣 Cast")
     end)
@@ -370,7 +370,7 @@ local function blatantFishingLoop()
             -- Step 1: Rapid fire casts (2 parallel casts)
             pcall(function()
                 Events.equip:FireServer(1)
-                task.wait(0.0001)
+                task.wait()
                 
                 -- Cast 1
                 task.spawn(function()
@@ -379,12 +379,12 @@ local function blatantFishingLoop()
                     Events.minigame:InvokeServer(1.2854545116425, 1)
                 end)
                 
-                task.wait(0.001)
+                task.wait()
                 
                 -- Cast 2 (overlapping)
                 task.spawn(function()
                     Events.charge:InvokeServer(1755848498.4834)
-                    task.wait(0.01)
+                    task.wait()
                     Events.minigame:InvokeServer(1.2854545116425, 1)
                 end)
             end)
@@ -401,7 +401,7 @@ local function blatantFishingLoop()
             end
             
             -- Step 4: Short cooldown (50% faster)
-            task.wait(Config.CatchDelay * 0.5)
+            task.wait(Config.CatchDelay * 0.1)
             
             isFishing = false
             print("[Blatant] ⚡ Fast cycle")
