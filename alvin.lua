@@ -2,7 +2,7 @@
 -- Safe Loader for Alvin (anti crash + GitHub rate limit)
 -- ============================================================
 
-local url = "https://raw.githubusercontent.com/RioYang010101/Alvin/refs/heads/main/script.lua"
+local url = "https://raw.githubusercontent.com/Alvindelin/fishit/refs/heads/main/alvin.lua"
 
 local success, response = pcall(function()
     return game:HttpGet(url)
