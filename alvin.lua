@@ -1,6 +1,40 @@
--- ====================================================================
---                 V1.0.3 - RAYFIELD UI EDITION (FIXED)
--- ====================================================================
+-- ============================================================
+-- Safe Loader for Alvin (anti crash + GitHub rate limit)
+-- ============================================================
+
+local url = "https://raw.githubusercontent.com/RioYang010101/Alvin/refs/heads/main/script.lua"
+
+local success, response = pcall(function()
+    return game:HttpGet(url)
+end)
+
+if success and type(response) == "string" and #response > 0 then
+    local loaded, loadErr = loadstring(response)
+    if loaded then
+        print("[Alvin] ✅ Loaded successfully!")
+        pcall(loaded)
+    else
+        warn("[Alvin] ⚠️ Script found but failed to compile:", loadErr)
+        if Rayfield and Rayfield.Notify then
+            Rayfield:Notify({
+                Title = "Load Error",
+                Content = "Script ditemukan tapi gagal dijalankan.\nCek isi file Alvin/script.lua.",
+                Duration = 5
+            })
+        end
+    end
+else
+    warn("[Alvin] ❌ Failed to fetch script. GitHub may be rate limited or offline.")
+    if Rayfield and Rayfield.Notify then
+        Rayfield:Notify({
+            Title = "GitHub Limit",
+            Content = "Server GitHub sedang sibuk / limit (HTTP 429).\nCoba lagi beberapa menit lagi.",
+            Duration = 7
+        })
+    else
+        print("[Alvin] GitHub mungkin sedang limit, coba lagi nanti.")
+    end
+end
 
 -- ====== CRITICAL DEPENDENCY VALIDATION ======
 local success, errorMsg = pcall(function()
@@ -324,7 +358,7 @@ task.spawn(function()
             break
         end
         tries = tries + 1
-        task.wait(0.1)
+        task.wait()
     end
 
     local inventory = nil
@@ -344,21 +378,21 @@ task.spawn(function()
             -- if PlayerData temporarily unavailable, skip this tick
             lastCount = 0
             task.wait(0.5)
-            continue
-        end
-
-        if #curItems > lastCount then
-            -- assume new items appended at end; favorite each new
-            for i = lastCount + 1, #curItems do
-                local newItem = curItems[i]
-                if newItem then
-                    autoFavoriteByRarity(newItem)
+            -- skip rest of loop body by not executing the next block
+        else
+            if #curItems > lastCount then
+                -- assume new items appended at end; favorite each new
+                for i = lastCount + 1, #curItems do
+                    local newItem = curItems[i]
+                    if newItem then
+                        autoFavoriteByRarity(newItem)
+                    end
                 end
             end
-        end
 
-        -- update lastCount
-        lastCount = #curItems
+            -- update lastCount
+            lastCount = #curItems
+        end
     end
 end)
 
@@ -372,9 +406,9 @@ local fishingActive = false
 local function castRod()
     pcall(function()
         Events.equip:FireServer(1)
-        task.wait(0.01)
+        task.wait()
         Events.charge:InvokeServer(1755848498.4834)
-        task.wait(0.02)
+        task.wait()
         Events.minigame:InvokeServer(1.2854545116425, 1)
         print("[Fishing] 🎣 Cast")
     end)
@@ -387,7 +421,7 @@ local function reelIn()
     end)
 end
 
--- BLATANT MODE: Your exact implementation
+-- BLATANT MODE
 local function blatantFishingLoop()
     while fishingActive and Config.BlatantMode do
         if not isFishing then
@@ -403,7 +437,7 @@ local function blatantFishingLoop()
                     Events.minigame:InvokeServer(1.2854545116425, 1)
                 end)
 
-                task.wait(0.01)
+                task.wait()
 
                 task.spawn(function()
                     Events.charge:InvokeServer(1755848498.4834)
@@ -444,7 +478,7 @@ local function normalFishingLoop()
 
             isFishing = false
         else
-            task.wait(0.1)
+            task.wait()
         end
     end
 end
@@ -456,7 +490,7 @@ local function fishingLoop()
         else
             normalFishingLoop()
         end
-        task.wait(0.1)
+        task.wait()
     end
 end
 
@@ -531,7 +565,6 @@ local BlatantToggle = MainTab:CreateToggle({
         saveConfig()
     end
 })
-
 local AutoFishToggle = MainTab:CreateToggle({
     Name = "🤖 Auto Fish",
     CurrentValue = Config.AutoFish,
@@ -558,22 +591,6 @@ local AutoCatchToggle = MainTab:CreateToggle({
         Config.AutoCatch = value
         print("[Auto Catch] " .. (value and "🟢 Enabled" or "🔴 Disabled"))
         saveConfig()
-    end
-})
-
-MainTab:CreateInput({
-    Name = "Fish Delay (seconds)",
-    PlaceholderText = "Default: 0.9",
-    RemoveTextAfterFocusLost = false,
-    Callback = function(value)
-        local num = tonumber(value)
-        if num and num >= 0.1 and num <= 10 then
-            Config.FishDelay = num
-            print("[Config] ✅ Fish delay set to " .. num .. "s")
-            saveConfig()
-        else
-            warn("[Config] ❌ Invalid delay (must be 0.1-10)")
-        end
     end
 })
 
