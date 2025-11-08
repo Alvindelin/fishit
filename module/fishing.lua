@@ -5,7 +5,7 @@
 local Fishing = {}
 Fishing.isActive = false
 Fishing.isFishing = false
-Fishing.useBlatantMode = false
+Fishing.useBlatantMode = true
 
 local Network = require(script.Parent.network)
 
@@ -41,19 +41,19 @@ local function blatantLoop(config)
             -- Parallel casts
             pcall(function()
                 Events.equip:FireServer(1)
-                task.wait(0.01)
+                task.wait()
 
                 task.spawn(function()
                     Events.charge:InvokeServer(1755848498.4834)
-                    task.wait(0.01)
+                    task.wait()
                     Events.minigame:InvokeServer(1.2854545116425, 1)
                 end)
 
-                task.wait(0.05)
+                task.wait()
 
                 task.spawn(function()
                     Events.charge:InvokeServer(1755848498.4834)
-                    task.wait(0.01)
+                    task.wait()
                     Events.minigame:InvokeServer(1.2854545116425, 1)
                 end)
             end)
@@ -63,13 +63,13 @@ local function blatantLoop(config)
             -- Spam reel
             for i = 1, 5 do
                 pcall(function() Events.fishing:FireServer() end)
-                task.wait(0.01)
+                task.wait()
             end
 
             task.wait(config.CatchDelay * 0.5)
             Fishing.isFishing = false
         else
-            task.wait(0.01)
+            task.wait()
         end
     end
 end
@@ -87,7 +87,7 @@ local function normalLoop(config)
 
             Fishing.isFishing = false
         else
-            task.wait(0.1)
+            task.wait()
         end
     end
 end
@@ -108,7 +108,7 @@ function Fishing.start(config, blatantMode)
             else
                 normalLoop(config)
             end
-            task.wait(0.1)
+            task.wait()
         end
     end)
 end
