@@ -14,9 +14,9 @@ local function castRod()
     pcall(function()
         local Events = Network.Events
         Events.equip:FireServer(1)
-        task.wait(0.05)
+        task.wait()
         Events.charge:InvokeServer(1755848498.4834)
-        task.wait(0.02)
+        task.wait()
         Events.minigame:InvokeServer(1.2854545116425, 1)
         print("[Fishing] Cast")
     end)
@@ -66,7 +66,7 @@ local function blatantLoop(config)
                 task.wait()
             end
 
-            task.wait(config.CatchDelay * 0.5)
+            task.wait(config.CatchDelay * 0.001)
             Fishing.isFishing = false
         else
             task.wait()
